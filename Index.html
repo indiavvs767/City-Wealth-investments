@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>City-Wealth Investments Dashboard</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+    background:#0a0a0a;color:#fff;
+    padding-top:60px
+}
+.container{max-width:1200px;margin:auto;padding:20px}
+.top-nav{
+    background:#1a1a1a;position:fixed;top:0;left:0;width:100%;
+    display:flex;align-items:center;padding:10px 20px;
+    border-bottom:1px solid #333;z-index:1000
+}
+.top-nav h1{color:#f0b90b;margin-right:20px;font-size:18px}
+.top-nav a{color:#fff;text-decoration:none;padding:10px 15px}
+.top-nav a:hover{background:#333;border-radius:5px}
+
+.modal{
+    display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,.8);justify-content:center;align-items:center
+}
+.modal-content{
+    background:#1a1a1a;padding:20px;border-radius:10px;
+    width:90%;max-width:400px;text-align:center
+}
+.modal-content h2{color:#f0b90b;margin-bottom:15px}
+.modal-content input{
+    width:100%;padding:10px;margin:10px 0;
+    background:#333;border:1px solid #444;color:#fff
+}
+.modal-content button{
+    width:100%;padding:10px;background:#f0b90b;
+    border:none;font-weight:bold;cursor:pointer
+}
+.error{color:red;margin-top:10px}
+
+.dashboard,.investment,.history{display:none;padding:20px}
+.balance-card,.chart-container,.pricing,.recent-transactions{
+    background:#1a1a1a;padding:20px;border-radius:10px;margin-bottom:20px
+}
+.balances,.charts{display:flex;gap:15px}
+.balance-card{flex:1;text-align:center}
+.balance-card h3{color:#f0b90b}
+.actions{text-align:center}
+.actions button{
+    padding:10px 20px;margin:5px;background:#f0b90b;
+    border:none;font-weight:bold;cursor:pointer
+}
+footer{text-align:center;padding:20px;background:#1a1a1a}
+</style>
+</head>
+
+<body>
+
+<div class="top-nav">
+    <h1>City-Coin Investment</h1>
+    <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+    <a href="#" onclick="showSection('investment')">Invest</a>
+    <a href="#" onclick="showSection('history')">History</a>
+    <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <h2>Login</h2>
+        <input type="email" id="username" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <div id="errorMsg" class="error"></div>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard">
+<div class="container">
+<h1>Dashboard</h1>
+<div class="balances">
+    <div class="balance-card">
+        <h3>Main Balance</h3>
+        <p id="mainBalance">$1410.00</p>
+    </div>
+    <div class="balance-card">
+        <h3>Invested</h3>
+        <p id="investedBalance">$750.00</p>
+    </div>
+    <div class="balance-card">
+        <h3>Total</h3>
+        <p id="totalPortfolio">$2160.00</p>
+    </div>
+</div>
+
+<div class="charts">
+    <div class="chart-container"><canvas id="portfolioChart"></canvas></div>
+    <div class="chart-container"><canvas id="allocationChart"></canvas></div>
+    <div class="chart-container"><canvas id="growthChart"></canvas></div>
+</div>
+
+<div class="actions">
+    <button onclick="deposit()">Deposit</button>
+    <button onclick="withdraw()">Withdraw</button>
+</div>
+</div>
+</div>
+
+<!-- INVEST -->
+<div id="investment" class="investment">
+<div class="container">
+<h2>Invest</h2>
+<select id="crypto">
+<option value="BTC">Bitcoin</option>
+<option value="ETH">Ethereum</option>
+</select>
+<input type="number" id="amount" placeholder="Amount">
+<button onclick="invest()">Invest</button>
+</div>
+</div>
+
+<!-- HISTORY -->
+<div id="history" class="history">
+<div class="container">
+<h2>History</h2>
+<p>Transactions shown here</p>
+</div>
+</div>
+
+<footer>© City-Coin Investment</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+/* COOKIE HELPERS */
+function setCookie(n,v,d){
+    let e="";if(d){
+        const t=new Date();
+        t.setTime(t.getTime()+d*864e5);
+        e="; expires="+t.toUTCString()
+    }
+    document.cookie=n+"="+v+e+"; path=/"
+}
+function getCookie(n){
+    return document.cookie.split("; ").find(r=>r.startsWith(n+"="))?.split("=")[1]
+}
+function eraseCookie(n){document.cookie=n+"=; Max-Age=0; path=/"}
+
+/* SESSION CHECK */
+document.addEventListener("DOMContentLoaded",()=>{
+    if(getCookie("loggedIn")==="true"){
+        loginModal.style.display="none";
+        forceDashboard()
+    }else{
+        loginModal.style.display="flex"
+    }
+})
+
+function forceDashboard(){
+    document.querySelectorAll(".dashboard,.investment,.history")
+    .forEach(e=>e.style.display="none");
+    dashboard.style.display="block"
+}
+
+/* AUTH */
+function login(){
+    if(username.value==="indiavvs767@gmail.com" &&
+       password.value==="pizzagirl"){
+        setCookie("loggedIn","true",365);
+        loginModal.style.display="none";
+        forceDashboard();
+        errorMsg.innerText=""
+    }else{
+        errorMsg.innerText="WRONG PASSWORD"
+    }
+}
+function logout(){
+    eraseCookie("loggedIn");
+    location.reload()
+}
+
+/* NAV */
+function showSection(id){
+    document.querySelectorAll(".dashboard,.investment,.history")
+    .forEach(e=>e.style.display="none");
+    document.getElementById(id).style.display="block"
+}
+
+/* FAKE ACTIONS */
+function deposit(){alert("2FA REQUIRED")}
+function withdraw(){alert("2FA REQUIRED")}
+function invest(){alert("USE PRIMARY DEVICE")}
+
+/* CHARTS */
+new Chart(portfolioChart,{type:"line",
+data:{labels:["Jan","Feb","Mar","Apr"],
+datasets:[{data:[10,12,11,15],borderColor:"#f0b90b"}]}})
+new Chart(allocationChart,{type:"pie",
+data:{labels:["BTC","ETH"],datasets:[{data:[60,40]}]}})
+new Chart(growthChart,{type:"bar",
+data:{labels:["BTC","ETH"],datasets:[{data:[2000,1500]}]}})
+
+</script>
+</body>
+</html>
