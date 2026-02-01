@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>City-Coin Investments</title>
 
-<!-- CHART.JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -23,52 +22,124 @@ body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto;
   background:radial-gradient(circle at top,#0b1220,#020617);
   color:#fff;
-  padding-top:75px;
+  padding-top:80px;
 }
 
-/* NAVBAR */
+/* ================= WOW TOP NAV ================= */
 .top-nav{
   position:fixed;
   top:0;left:0;width:100%;
-  background:rgba(2,6,23,.85);
-  backdrop-filter:blur(12px);
+  height:72px;
+  padding:0 28px;
   display:flex;
+  justify-content:space-between;
   align-items:center;
-  padding:16px 30px;
-  border-bottom:1px solid var(--border);
+  background:rgba(2,6,23,.78);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.06);
   z-index:1000;
 }
-.top-nav h1{
-  color:var(--accent);
-  font-size:20px;
-  font-weight:700;
-  margin-right:auto;
-}
-.top-nav a{
-  color:#fff;
-  text-decoration:none;
-  margin-left:14px;
-  padding:8px 14px;
-  border-radius:8px;
-  transition:.25s;
-}
-.top-nav a:hover{
-  background:rgba(240,185,11,.15);
-  color:var(--accent);
+
+/* LEFT */
+.nav-left{
+  display:flex;
+  align-items:center;
+  gap:40px;
 }
 
-/* CONTAINER */
+/* BRAND */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:18px;
+  font-weight:800;
+  color:var(--accent);
+}
+.logo-dot{
+  width:10px;height:10px;
+  background:linear-gradient(135deg,#f0b90b,#ffd95a);
+  border-radius:50%;
+  box-shadow:0 0 14px rgba(240,185,11,.8);
+}
+
+/* LINKS */
+.nav-links{
+  display:flex;
+  gap:22px;
+}
+.nav-links a{
+  position:relative;
+  text-decoration:none;
+  color:#cbd5f5;
+  font-weight:500;
+  padding:6px 2px;
+  transition:.3s;
+}
+.nav-links a:hover{color:#fff}
+.nav-links a::after{
+  content:"";
+  position:absolute;
+  left:0;bottom:-6px;
+  width:0;height:2px;
+  background:linear-gradient(90deg,#f0b90b,#ffd95a);
+  transition:.3s;
+}
+.nav-links a.active::after,
+.nav-links a:hover::after{width:100%}
+
+/* RIGHT */
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 12px;
+  background:rgba(255,255,255,.05);
+  border-radius:20px;
+  font-size:13px;
+  color:#cbd5f5;
+}
+.status-dot{
+  width:7px;height:7px;
+  background:#22c55e;
+  border-radius:50%;
+  box-shadow:0 0 8px rgba(34,197,94,.8);
+}
+.logout-btn{
+  padding:8px 16px;
+  border-radius:10px;
+  background:transparent;
+  border:1px solid rgba(240,185,11,.4);
+  color:var(--accent);
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+.logout-btn:hover{
+  background:rgba(240,185,11,.15);
+  box-shadow:0 0 20px rgba(240,185,11,.35);
+}
+
+/* ================= LAYOUT ================= */
 .container{
   max-width:1200px;
   margin:auto;
   padding:20px;
 }
 
-/* SECTIONS */
 .dashboard,.investment,.history{display:none}
-.dashboard h1{font-size:30px;margin-bottom:25px}
 
-/* CARDS */
+.dashboard h1{
+  font-size:30px;
+  margin-bottom:25px;
+}
+
+/* ================= CARDS ================= */
 .card{
   background:linear-gradient(180deg,#0f172a,#020617);
   border:1px solid var(--border);
@@ -129,16 +200,15 @@ body{
 }
 
 /* INVEST */
-.investment h2,
-.history h2{
+.investment h2,.history h2{
   font-size:26px;
   margin-bottom:20px;
 }
 .investment select,
 .investment input{
   width:100%;
-  margin:12px 0;
   padding:14px;
+  margin:12px 0;
   background:#020617;
   border:1px solid var(--border);
   color:#fff;
@@ -151,12 +221,10 @@ body{
   border:none;
   border-radius:10px;
   font-weight:800;
-  margin-top:12px;
 }
 
-/* MODAL */
+/* ================= MODAL ================= */
 .modal{
-  display:none;
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.9);
@@ -172,4 +240,168 @@ body{
   border:1px solid var(--border);
   border-radius:18px;
   padding:35px;
-  box-shadow:0 40px
+  box-shadow:0 40px 90px rgba(0,0,0,.75);
+}
+.modal-content h2{
+  text-align:center;
+  color:var(--accent);
+  margin-bottom:22px;
+}
+.modal-content input{
+  width:100%;
+  padding:14px;
+  margin:10px 0;
+  background:#020617;
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:#fff;
+}
+.modal-content button{
+  width:100%;
+  padding:14px;
+  margin-top:15px;
+  background:linear-gradient(135deg,#f0b90b,#ffd95a);
+  border:none;
+  border-radius:10px;
+  font-weight:800;
+}
+.error{
+  text-align:center;
+  color:#ff4d4d;
+  margin-top:12px;
+}
+
+/* FOOTER */
+footer{
+  margin-top:60px;
+  padding:25px;
+  text-align:center;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<header class="top-nav">
+  <div class="nav-left">
+    <div class="brand">
+      <span class="logo-dot"></span>
+      <span>City-Coin</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#" class="active" onclick="activateNav(this);showSection('dashboard')">Dashboard</a>
+      <a href="#" onclick="activateNav(this);showSection('investment')">Invest</a>
+      <a href="#" onclick="activateNav(this);showSection('history')">History</a>
+    </nav>
+  </div>
+  <div class="nav-right">
+    <div class="user-chip">
+      <span class="status-dot"></span> Verified
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<!-- LOGIN -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <h2>Secure Login</h2>
+    <input type="email" id="username" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Access Dashboard</button>
+    <div id="errorMsg" class="error"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard">
+<div class="container">
+<h1>Dashboard Overview</h1>
+
+<div class="balances">
+  <div class="card balance-card"><h3>Main Balance</h3><p>$1,410.00</p></div>
+  <div class="card balance-card"><h3>Invested</h3><p>$750.00</p></div>
+  <div class="card balance-card"><h3>Total Portfolio</h3><p>$2,160.00</p></div>
+</div>
+
+<div class="charts">
+  <div class="card"><canvas id="portfolioChart"></canvas></div>
+  <div class="card"><canvas id="allocationChart"></canvas></div>
+  <div class="card"><canvas id="growthChart"></canvas></div>
+</div>
+
+<div class="actions">
+  <button onclick="deposit()">Deposit</button>
+  <button onclick="withdraw()">Withdraw</button>
+</div>
+</div>
+</div>
+
+<!-- INVEST -->
+<div id="investment" class="investment">
+<div class="container">
+<h2>Make an Investment</h2>
+<select><option>Bitcoin (BTC)</option><option>Ethereum (ETH)</option></select>
+<input type="number" placeholder="Amount">
+<button onclick="invest()">Confirm Investment</button>
+</div>
+</div>
+
+<!-- HISTORY -->
+<div id="history" class="history">
+<div class="container">
+<h2>Transaction History</h2>
+<p>Transactions will appear here.</p>
+</div>
+</div>
+
+<footer>© 2026 City-Coin Investments</footer>
+
+<script>
+function activateNav(el){
+  document.querySelectorAll(".nav-links a").forEach(a=>a.classList.remove("active"));
+  el.classList.add("active");
+}
+
+/* COOKIE + AUTH */
+function setCookie(n,v,d){let e="";if(d){let t=new Date();t.setTime(t.getTime()+d*864e5);e="; expires="+t.toUTCString()}document.cookie=n+"="+v+e+"; path=/"}
+function getCookie(n){return document.cookie.split("; ").find(r=>r.startsWith(n+"="))?.split("=")[1]}
+function eraseCookie(n){document.cookie=n+"=; Max-Age=0; path=/"}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  if(getCookie("loggedIn")==="true"){
+    loginModal.style.display="none";
+    showSection("dashboard");
+  }
+});
+
+function login(){
+  if(username.value==="indiavvs767@gmail.com" && password.value==="pizzagirl"){
+    setCookie("loggedIn","true",365);
+    loginModal.style.display="none";
+    showSection("dashboard");
+    errorMsg.innerText="";
+  }else{
+    errorMsg.innerText="Invalid credentials";
+  }
+}
+function logout(){eraseCookie("loggedIn");location.reload()}
+function showSection(id){
+  document.querySelectorAll(".dashboard,.investment,.history").forEach(e=>e.style.display="none");
+  document.getElementById(id).style.display="block";
+}
+function deposit(){alert("2FA Required")}
+function withdraw(){alert("2FA Required")}
+function invest(){alert("Use primary device")}
+
+/* CHARTS */
+new Chart(portfolioChart,{type:"line",data:{labels:["Jan","Feb","Mar","Apr"],datasets:[{data:[10,12,11,15],borderColor:"#f0b90b",tension:.4}]}})
+new Chart(allocationChart,{type:"pie",data:{labels:["BTC","ETH"],datasets:[{data:[60,40],backgroundColor:["#f0b90b","#2563eb"]}]}})
+new Chart(growthChart,{type:"bar",data:{labels:["BTC","ETH"],datasets:[{data:[2000,1500],backgroundColor:"#f0b90b"}]}})
+</script>
+
+</body>
+</html>
